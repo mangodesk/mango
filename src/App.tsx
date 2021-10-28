@@ -1,12 +1,11 @@
-import { GlobalStyle } from './styles/GlobalStyle'
-
+import { ThemeProvider } from '@mui/material'
 import Layout from './components/Layout'
+import theme from './themes/default';
 
 export function App() {
   return (
-    <>
-      <GlobalStyle />
+    <ThemeProvider theme={theme}>
       <Layout />
-    </>
+    </ThemeProvider>
   )
 }

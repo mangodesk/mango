@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,15 +16,16 @@ import AddIcon from '@mui/icons-material/AddOutlined';
 const drawerWidth = 60;
 const colorIcon = "#858585";
 
-const Menu = styled(Drawer)`
- .MuiDrawer-paper {
-   background-color: #333333;
- }
-`
-const Content = styled(Box)`
-  background-color: #1e1e1e;
-  height: 100vh;
-`
+const Menu = styled(Drawer)(({ theme }) => ({
+  '.MuiDrawer-paper': {
+     backgroundColor: (theme.palette.primary.main)
+  }
+}));
+
+const Content = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
+  height: '100vh'
+}));
 
 export default function Layout() {
   return (
