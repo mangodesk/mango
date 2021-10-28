@@ -1,15 +1,15 @@
 import React from 'react'
 
-import GlobalStyle from './styles/GlobalStyle'
+import { ThemeProvider } from '@mui/material'
+import theme from './themes/default';
 import Layout from './components/Layout'
-import CodeEditor from './components/CodeEditor'
 
 export function App() {
   return (
     <React.StrictMode>
-      <GlobalStyle />
-      <Layout />
-      <CodeEditor />
+      <ThemeProvider theme={theme}>
+        <Layout />
+      </ThemeProvider>
     </React.StrictMode>
   )
 }
