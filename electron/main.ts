@@ -1,12 +1,12 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, Event } from 'electron'
 
 let mainWindow: BrowserWindow | null
+let threadWindow: BrowserWindow | null
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
+declare const THREAD_WINDOW_WEBPACK_ENTRY: string
 
-
-function createWindow () {
+function createMainWindow () {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     width: 1300,
@@ -17,7 +17,6 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
   })
   
@@ -30,6 +29,31 @@ function createWindow () {
   })
 }
 
+function createThreadWindow () {
+  threadWindow = new BrowserWindow({
+    show: false,
+    width: 0,
+    height: 0,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+    },
+  })
+  
+  threadWindow.webContents.openDevTools({ mode: 'detach' });
+
+  threadWindow.loadURL(THREAD_WINDOW_WEBPACK_ENTRY)
+
+  threadWindow.on('close', (e: Event) => {
+    e.preventDefault();
+    return false;
+  })
+
+  threadWindow.on('closed', () => {
+    threadWindow = null
+  })
+}
+
 async function registerListeners () {
   /**
    * This comes from bridge integration, check bridge.ts
@@ -39,7 +63,10 @@ async function registerListeners () {
   })
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createThreadWindow();
+  createMainWindow();
+})
   .whenReady()
   .then(registerListeners)
   .catch(e => console.error(e))
@@ -51,7 +78,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
+  if (mainWindow === null) {
+    createMainWindow()
   }
 })
