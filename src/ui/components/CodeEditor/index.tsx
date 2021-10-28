@@ -16,7 +16,6 @@ export default function CodeEditor() {
 
   return (
     <Editor
-      height="90vh"
       defaultLanguage="typescript"
       defaultValue="// some comment"
       theme="vs-dark"

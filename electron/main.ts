@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Event } from 'electron'
+import { app, BrowserWindow, Event } from 'electron'
 
 let mainWindow: BrowserWindow | null
 let threadWindow: BrowserWindow | null
@@ -13,7 +13,6 @@ function createMainWindow () {
     height: 700,
     minWidth: 1300,
     minHeight: 700,
-    backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -54,21 +53,11 @@ function createThreadWindow () {
   })
 }
 
-async function registerListeners () {
-  /**
-   * This comes from bridge integration, check bridge.ts
-   */
-  ipcMain.on('message', (_, message) => {
-    console.log(message)
-  })
-}
-
 app.on('ready', () => {
   createThreadWindow();
   createMainWindow();
 })
   .whenReady()
-  .then(registerListeners)
   .catch(e => console.error(e))
 
 app.on('window-all-closed', () => {

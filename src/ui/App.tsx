@@ -3,12 +3,15 @@ import React from 'react'
 import { ThemeProvider } from '@mui/material'
 import theme from './themes/default';
 import Layout from './components/Layout'
+import CodeEditor from './components/CodeEditor';
 
 export function App() {
   return (
     <React.StrictMode>
       <ThemeProvider theme={theme}>
-        <Layout />
+        <Layout>
+          <CodeEditor />
+        </Layout>
       </ThemeProvider>
     </React.StrictMode>
   )
