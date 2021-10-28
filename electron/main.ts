@@ -43,10 +43,10 @@ function createThreadWindow () {
 
   threadWindow.loadURL(THREAD_WINDOW_WEBPACK_ENTRY)
 
-  threadWindow.on('close', (e: Event) => {
-    e.preventDefault();
-    return false;
-  })
+  // threadWindow.on('close', (e: Event) => {
+  //   e.preventDefault();
+  //   return false;
+  // })
 
   threadWindow.on('closed', () => {
     threadWindow = null
