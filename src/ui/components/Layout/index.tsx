@@ -23,7 +23,9 @@ const Menu = styled(Drawer)(({ theme }) => ({
 
 const Content = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
-  height: '100vh'
+  height: '100vh',
+  p: 3,
+  flexGrow: 1,
 }));
 
 type LayoutProps = {
@@ -69,7 +71,6 @@ export default function Layout({ children }: LayoutProps) {
       </Menu>
       <Content
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       >
         <Toolbar />
         {children && children}
