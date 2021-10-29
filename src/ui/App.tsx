@@ -6,6 +6,8 @@ import Layout from './components/Layout'
 import CodeEditor from './components/CodeEditor';
 
 export function App() {
+  bridge.initialize();
+
   return (
     <React.StrictMode>
       <ThemeProvider theme={theme}>

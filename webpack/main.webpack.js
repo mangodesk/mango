@@ -1,6 +1,7 @@
 module.exports = {
+  target: 'electron-main',
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
   entry: './electron/main.ts',
   module: {

@@ -1,7 +1,9 @@
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor, { useMonaco, loader } from "@monaco-editor/react";
 import { useEffect } from "react";
 
 export default function CodeEditor() {
+  loader.config({ paths: { vs: '/vs' } });
+
   const monaco = useMonaco();
 
   useEffect(() => {
