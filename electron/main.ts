@@ -1,10 +1,14 @@
-import { app, BrowserWindow, Event } from 'electron'
+import { app, BrowserWindow } from 'electron'
+
+import Store from 'electron-store';
 
 let mainWindow: BrowserWindow | null
 let threadWindow: BrowserWindow | null
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const THREAD_WINDOW_WEBPACK_ENTRY: string
+
+Store.initRenderer();
 
 function createMainWindow () {
   mainWindow = new BrowserWindow({

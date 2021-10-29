@@ -1,4 +1,4 @@
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+
 
 module.exports = {
   resolve: {
@@ -9,5 +9,7 @@ module.exports = {
       ...require('./rules.webpack'),
     ],
   },
-  plugins: [new MonacoWebpackPlugin({ languages: [ 'typescript', 'javascript']})],
+  externals: [{
+    'electron-store': 'electron-store'
+  }],
 }
