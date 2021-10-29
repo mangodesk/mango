@@ -6,7 +6,7 @@ import Layout from './components/Layout'
 import CodeEditor from './components/CodeEditor';
 
 export function App() {
-  bridge.initialize();
+  window.bridge.initialize();
 
   return (
     <React.StrictMode>

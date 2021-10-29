@@ -1,5 +1,7 @@
 import { app, BrowserWindow, ipcMain, MessageChannelMain } from 'electron'
 
+app.commandLine.appendSwitch('disable-features', 'CrossOriginOpenerPolicy')
+
 let mainWindow: BrowserWindow | null
 let threadWindow: BrowserWindow | null
 

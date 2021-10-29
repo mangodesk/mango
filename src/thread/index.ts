@@ -1,3 +1,3 @@
 (async () => {
-  const Messager = await bridge.initialize();
+  const Messager = await window.bridge.initialize();
 })();
