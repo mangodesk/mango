@@ -1,4 +1,7 @@
+
 import { app, BrowserWindow, ipcMain, MessageChannelMain } from 'electron'
+
+import Store from 'electron-store';
 
 let mainWindow: BrowserWindow | null
 let threadWindow: BrowserWindow | null
@@ -7,6 +10,8 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 declare const THREAD_WINDOW_WEBPACK_ENTRY: string
 declare const THREAD_WINDOW_PRELOAD_WEBPACK_ENTRY: string
+
+Store.initRenderer();
 
 function createMainWindow () {
   mainWindow = new BrowserWindow({

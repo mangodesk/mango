@@ -26,4 +26,7 @@ module.exports = {
       ].filter(Boolean)
     })
   ],
+  externals: [{
+    'electron-store': 'electron-store'
+  }],
 }

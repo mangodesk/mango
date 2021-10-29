@@ -1,6 +1,6 @@
 module.exports = [
   {
-    test: /\.node$/,
+    test: /native_modules\/.+\.node$/,
     use: 'node-loader',
   },
   {
