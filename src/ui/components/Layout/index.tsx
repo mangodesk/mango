@@ -1,4 +1,7 @@
 import * as React from 'react';
+import {
+  Link,
+} from "react-router-dom";
 import { styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -49,16 +52,20 @@ export default function Layout({ children }: LayoutProps) {
         anchor="left"
       >
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <StorageIcon sx={{ color: colorIcon }} />  
-            </ListItemIcon>
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <AddIcon sx={{ color: colorIcon }} />  
-            </ListItemIcon>
-          </ListItem>
+          <Link to='/'>
+            <ListItem button>
+              <ListItemIcon>
+                <StorageIcon sx={{ color: colorIcon }} />  
+              </ListItemIcon>
+            </ListItem>
+          </Link>
+          <Link to='/test'>
+            <ListItem button>
+              <ListItemIcon>
+                <AddIcon sx={{ color: colorIcon }} />  
+              </ListItemIcon>
+            </ListItem>
+          </Link>
         </List>
         <Divider />
         <List>
