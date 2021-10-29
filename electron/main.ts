@@ -11,7 +11,7 @@ declare const THREAD_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 function createMainWindow () {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
-    show: true,
+    show: false,
     width: 1300,
     height: 700,
     minWidth: 1300,
