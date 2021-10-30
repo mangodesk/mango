@@ -1,3 +1,5 @@
+
+const path = require('path');
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
@@ -21,7 +23,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "public", to: "." },
-        { from: "node_modules/monaco-editor/min/vs/", to: "vs" },
+        { from: "node_modules/monaco-editor/min/vs/", to: path.resolve(__dirname, '../.webpack/renderer/vs') },
         !IS_PRODUCTION && { from: "node_modules/monaco-editor/min-maps/vs/", to: "min-maps/vs" }
       ].filter(Boolean)
     })
