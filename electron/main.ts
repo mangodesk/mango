@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, MessageChannelMain } from 'electron'
 
-app.commandLine.appendSwitch('disable-features', 'CrossOriginOpenerPolicy')
+app.commandLine.appendSwitch('enable-features', "SharedArrayBuffer")
 
 let mainWindow: BrowserWindow | null
 let threadWindow: BrowserWindow | null
