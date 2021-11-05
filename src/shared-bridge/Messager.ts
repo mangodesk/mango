@@ -22,10 +22,10 @@ export default class Messager extends EventEmitter {
 
     this.messagePort = messagePort;
 
-    this.messagePort.onmessage = this.onMessage;
+    this.messagePort.onmessage = this.onMessage.bind(this);
   }
 
-  public async invoke(name: string, payload: any): Promise<any> {
+  public async invoke(name: string, payload: any = {}): Promise<any> {
     const internalMessage = this.makeInternalMessage(name, payload);
 
     return new Promise((resolve) => {
