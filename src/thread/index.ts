@@ -7,7 +7,7 @@
 
   console.log(await mongodb.listDatabases())
 
-  messager.handle('test', async () => {
-    return 'test okok';
+  messager.handle('connect', async ({ connectionString }) => {
+    console.log('connectionString', connectionString)
   });
 })();

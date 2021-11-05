@@ -1,7 +1,8 @@
-import React, { useReducer, useState } from 'react'
+import React, { useContext, useReducer, useState } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { MessagerContext } from '../App'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
@@ -12,7 +13,7 @@ type State = {
 
 const initialState: State = {
   isLoading: false,
-  connectionString: undefined,
+  connectionString: '',
 }
 
 function reducer(state: State, action: { type: string; payload: any }): State {
@@ -27,6 +28,7 @@ function reducer(state: State, action: { type: string; payload: any }): State {
 }
 
 export default function ConnectionPage() {
+  const messager = useContext(MessagerContext)
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const updateConnectionString = (
@@ -35,10 +37,12 @@ export default function ConnectionPage() {
     dispatch({ type: 'updateConnectionString', payload: event.target.value })
   }
 
-  const connect = () => {
+  const connect = async () => {
     dispatch({ type: 'setIsLoading', payload: true })
 
     const connectionString = state.connectionString || DEFAULT_CONNECTION_STRING
+
+    await messager?.invoke('connect', { connectionString })
 
     dispatch({ type: 'setIsLoading', payload: false })
   }

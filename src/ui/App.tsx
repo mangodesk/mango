@@ -21,7 +21,7 @@ type Messager = {
   invoke: (name: string, payload?: any) => Promise<any>
 }
 
-const MessagerContext = createContext<undefined | Messager>(undefined)
+export const MessagerContext = createContext<undefined | Messager>(undefined)
 
 function AppLoading() {
   const [messager, setMessager] = useState<undefined | Messager>()
@@ -35,9 +35,7 @@ function AppLoading() {
 
       setMessager(bridgeAPI.messager)
 
-      setTimeout(() => {
-        dispatch(setIsInitializing(false))
-      }, 2000)
+      dispatch(setIsInitializing(false))
     }
 
     initialize()
