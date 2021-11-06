@@ -1,8 +1,9 @@
-import React, { useContext, useReducer, useState } from 'react'
+import React, { useContext, useReducer } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { MessagerContext } from '../App'
+import { Container, Grid, Paper, Typography } from '@mui/material'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
@@ -48,30 +49,37 @@ export default function ConnectionPage() {
   }
 
   return (
-    <Box
-      component="form"
-      sx={{
-        '& > :not(style)': { m: 1, width: '25ch' },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <TextField
-        placeholder={DEFAULT_CONNECTION_STRING}
-        label="Connection string"
-        variant="outlined"
-        value={state.connectionString}
-        onChange={updateConnectionString}
-      />
+    <Container>
+      <Paper>
+        <Box px={3} py={2} component="form" noValidate autoComplete="off">
+          <Typography variant="h6" margin="dense">
+            Add a new database
+          </Typography>
 
-      <LoadingButton
-        variant="outlined"
-        size="large"
-        loading={state.isLoading}
-        onClick={connect}
-      >
-        Connect
-      </LoadingButton>
-    </Box>
+          <Grid container>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                placeholder={DEFAULT_CONNECTION_STRING}
+                label="Connection string"
+                variant="outlined"
+                value={state.connectionString}
+                onChange={updateConnectionString}
+                fullWidth
+                margin="dense"
+              />
+            </Grid>
+          </Grid>
+
+          <LoadingButton
+            variant="contained"
+            size="large"
+            loading={state.isLoading}
+            onClick={connect}
+          >
+            Connect
+          </LoadingButton>
+        </Box>
+      </Paper>
+    </Container>
   )
 }

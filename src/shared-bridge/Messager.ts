@@ -36,7 +36,7 @@ export default class Messager extends EventEmitter {
   }
 
   public handle(name: string, handlerFn: (message: any) => Promise<any>) {
-    this.once(name, async (internalMessage: InternalMessage) => {
+    this.on(name, async (internalMessage: InternalMessage) => {
       const replyData = await handlerFn(internalMessage.payload);
 
       const replyMessage = this.makeReplyMessage(internalMessage, replyData);
