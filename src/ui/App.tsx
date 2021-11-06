@@ -14,7 +14,7 @@ import ConnectionPage from './pages/ConnectionPage'
 import { Provider, useSelector } from 'react-redux'
 import store, { RootState, useAppDispatch, setIsInitializing } from './store'
 
-// const CodeEditor = lazy(() => import('./components/CodeEditor'));
+const QueryPage = lazy(() => import('./pages/QueryPage'))
 
 type Messager = {
   handle: (name: string, handlerFn: (message: any) => Promise<any>) => void
@@ -58,6 +58,9 @@ function AppLoading() {
       <Layout>
         <Switch>
           <Route path="/" component={ConnectionPage} />
+        </Switch>
+        <Switch>
+          <Route path="/query" component={QueryPage} />
         </Switch>
       </Layout>
     </MessagerContext.Provider>

@@ -43,7 +43,15 @@ export default function ConnectionPage() {
 
     const connectionString = state.connectionString || DEFAULT_CONNECTION_STRING
 
-    await messager?.invoke('connect', { connectionString })
+    try {
+      const { databases } = await messager?.invoke('connect', {
+        connectionString,
+      })
+
+      console.log(databases)
+    } catch (error) {
+      console.error(error)
+    }
 
     dispatch({ type: 'setIsLoading', payload: false })
   }

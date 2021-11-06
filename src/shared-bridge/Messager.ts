@@ -7,6 +7,7 @@ type InternalMessage = {
   payload: any;
   waitForReply?: boolean;
   _isInternalMessage: boolean;
+  isError?: boolean;
 };
 
 function isInternalMessage(message: any | InternalMessage): message is InternalMessage {
@@ -28,8 +29,14 @@ export default class Messager extends EventEmitter {
   public async invoke(name: string, payload: any = {}): Promise<any> {
     const internalMessage = this.makeInternalMessage(name, payload);
 
-    return new Promise((resolve) => {
-      this.once(internalMessage.id, ({ payload }: InternalMessage) => resolve(payload));
+    return new Promise((resolve, reject) => {
+      this.once(internalMessage.id, ({ payload, isError }: InternalMessage) => {
+        if (isError) {
+          return reject(payload);
+        }
+
+        return resolve(payload);
+      });
 
       this.sendInternalMessage(internalMessage);
     });
@@ -37,9 +44,16 @@ export default class Messager extends EventEmitter {
 
   public handle(name: string, handlerFn: (message: any) => Promise<any>) {
     this.on(name, async (internalMessage: InternalMessage) => {
-      const replyData = await handlerFn(internalMessage.payload);
+      let replyData;
+      let errorData;
+      
+      try {
+        replyData = await handlerFn(internalMessage.payload);
+      } catch (error) {
+        errorData = error;
+      }
 
-      const replyMessage = this.makeReplyMessage(internalMessage, replyData);
+      const replyMessage = this.makeReplyMessage(internalMessage, replyData, errorData);
 
       this.sendInternalMessage(replyMessage);
     });
@@ -59,11 +73,12 @@ export default class Messager extends EventEmitter {
     return this.messagePort.postMessage(message);
   }
 
-  private makeReplyMessage(internalMessage: InternalMessage, payload: any): InternalMessage {
+  private makeReplyMessage(internalMessage: InternalMessage, payload?: any, error?: any): InternalMessage {
     return {
       ...internalMessage,
-      payload,
+      payload: payload || error,
       waitForReply: false,
+      isError: !!error,
     };
   }
 
