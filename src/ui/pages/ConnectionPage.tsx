@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Controller, useForm } from "react-hook-form";
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -14,11 +15,11 @@ const FormContent = styled(Box)({
 
 export default function ConnectionPage() {
   const messager = useMessager()
+  const { handleSubmit, control } = useForm();
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [connectionString, updateConnectionString] = React.useState(DEFAULT_CONNECTION_STRING);
 
-  const connect = async () => {
+  const connect = async ({ connectionString }: { connectionString: string }) => {
     setIsLoading(true);
 
     try {
@@ -43,19 +44,27 @@ export default function ConnectionPage() {
           <Divider />
 
           <FormContent>
-            <TextField
-              placeholder={DEFAULT_CONNECTION_STRING}
-              label="Connection string"
-              variant="outlined"
-              value={connectionString}
-              onChange={event => updateConnectionString(event.target.value)}
-              fullWidth
+            <Controller
+              name={"connectionString"}
+              control={control}
+              defaultValue={DEFAULT_CONNECTION_STRING}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  placeholder={DEFAULT_CONNECTION_STRING}
+                  label="Connection string"
+                  variant="outlined"
+                  value={value}
+                  onChange={onChange}
+                  fullWidth
+                />
+              )}
             />
+            
               <LoadingButton
                 sx={{ marginLeft: '10px' }}
                 variant="outlined"
                 loading={isLoading}
-                onClick={connect}
+                onClick={handleSubmit(connect)}
               >
               Connect
             </LoadingButton>
