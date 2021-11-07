@@ -1,25 +1,23 @@
-import React, { useContext, useState } from 'react'
+import * as React from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Container, Grid, Paper, Typography } from '@mui/material'
-import { MessagerContext } from '../App'
+import { useMessager } from '../core/messager'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
 export default function ConnectionPage() {
-  const messager = useContext(MessagerContext)
+  const messager = useMessager()
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [connectionString, updateConnectionString] = useState(DEFAULT_CONNECTION_STRING);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [connectionString, updateConnectionString] = React.useState(DEFAULT_CONNECTION_STRING);
 
   const connect = async () => {
     setIsLoading(true);
 
     try {
-      const { databases } = await messager?.invoke('connect', {
-        connectionString,
-      })
+      const databases = await messager?.connect(connectionString)
 
       console.log(databases)
     } catch (error) {
