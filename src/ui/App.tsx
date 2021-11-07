@@ -1,4 +1,4 @@
-import React, { createContext, lazy, useEffect, useState } from 'react'
+import * as React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
 import {
@@ -11,35 +11,12 @@ import defaultTheme from './themes/default'
 import Layout from './components/Layout'
 import ConnectionPage from './pages/ConnectionPage'
 import { Provider, useSelector } from 'react-redux'
-import store, { RootState, useAppDispatch, setIsInitializing } from './store'
+import store, { RootState } from './store'
+import { MessagerProvider } from './core/messager'
 
-const QueryPage = lazy(() => import('./pages/QueryPage'))
-
-type Messager = {
-  handle: (name: string, handlerFn: (message: any) => Promise<any>) => void
-  invoke: (name: string, payload?: any) => Promise<any>
-}
-
-export const MessagerContext = createContext<undefined | Messager>(undefined)
+const QueryPage = React.lazy(() => import('./pages/QueryPage'))
 
 function AppLoading() {
-  const [messager, setMessager] = useState<undefined | Messager>()
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const initialize = async () => {
-      dispatch(setIsInitializing(true))
-
-      const bridgeAPI = await window.bridge.initialize()
-
-      setMessager(bridgeAPI.messager)
-
-      dispatch(setIsInitializing(false))
-    }
-
-    initialize()
-  }, [])
-
   const isInitializing = useSelector<RootState>(
     state => state.app.isInitializing
   )
@@ -53,16 +30,14 @@ function AppLoading() {
   }
 
   return (
-    <MessagerContext.Provider value={messager}>
-      <Layout>
-        <Switch>
-          <Route path="/" component={ConnectionPage} />
-        </Switch>
-        <Switch>
-          <Route path="/query" component={QueryPage} />
-        </Switch>
-      </Layout>
-    </MessagerContext.Provider>
+    <Layout>
+      <Switch>
+        <Route path="/" component={ConnectionPage} />
+      </Switch>
+      <Switch>
+        <Route path="/query" component={QueryPage} />
+      </Switch>
+    </Layout>
   )
 }
 
@@ -85,7 +60,9 @@ export function App() {
       <Router>
         <ThemeProvider theme={theme}>
           <Provider store={store}>
-            <AppLoading />
+            <MessagerProvider>
+              <AppLoading />
+            </MessagerProvider>
           </Provider>
         </ThemeProvider>
       </Router>
