@@ -6,8 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 const Content = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   height: '100vh',
-  p: 3,
-  flexGrow: 1,
+  padding: 10,
 }))
 
 type LayoutProps = {
@@ -16,9 +15,11 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <>
       <CssBaseline />
-      <Content component="main">{children && children}</Content>
-    </Box>
+      <Content component="main">
+        {children && children}
+      </Content>
+    </>
   )
 }
