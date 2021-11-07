@@ -1,6 +1,5 @@
 import React, { createContext, lazy, useEffect, useState } from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
-import merge from 'lodash/merge'
 
 import {
   CircularProgress,
@@ -72,13 +71,12 @@ export function App() {
 
   const theme = React.useMemo(
     () =>
-      createTheme(
-        merge({}, defaultTheme, {
-          palette: {
-            mode: prefersDarkMode ? 'dark' : 'light',
-          },
-        })
-      ),
+      createTheme({
+        palette: {
+           mode: prefersDarkMode ? 'dark' : 'light',
+        },
+        ...defaultTheme,
+      }),
     [prefersDarkMode]
   )
 
