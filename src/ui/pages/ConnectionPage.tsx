@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from 'react'
+import React, { useContext, useState } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -7,41 +7,14 @@ import { Container, Grid, Paper, Typography } from '@mui/material'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
-type State = {
-  isLoading: boolean
-  connectionString?: string
-}
-
-const initialState: State = {
-  isLoading: false,
-  connectionString: '',
-}
-
-function reducer(state: State, action: { type: string; payload: any }): State {
-  switch (action.type) {
-    case 'setIsLoading':
-      return { ...state, isLoading: action.payload }
-    case 'updateConnectionString':
-      return { ...state, connectionString: action.payload }
-    default:
-      throw new Error('Unknown action')
-  }
-}
-
 export default function ConnectionPage() {
   const messager = useContext(MessagerContext)
-  const [state, dispatch] = useReducer(reducer, initialState)
 
-  const updateConnectionString = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    dispatch({ type: 'updateConnectionString', payload: event.target.value })
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [connectionString, updateConnectionString] = useState(DEFAULT_CONNECTION_STRING);
 
   const connect = async () => {
-    dispatch({ type: 'setIsLoading', payload: true })
-
-    const connectionString = state.connectionString || DEFAULT_CONNECTION_STRING
+    setIsLoading(true);
 
     try {
       const { databases } = await messager?.invoke('connect', {
@@ -53,7 +26,7 @@ export default function ConnectionPage() {
       console.error(error)
     }
 
-    dispatch({ type: 'setIsLoading', payload: false })
+    setIsLoading(false);
   }
 
   return (
@@ -70,8 +43,8 @@ export default function ConnectionPage() {
                 placeholder={DEFAULT_CONNECTION_STRING}
                 label="Connection string"
                 variant="outlined"
-                value={state.connectionString}
-                onChange={updateConnectionString}
+                value={connectionString}
+                onChange={event => updateConnectionString(event.target.value)}
                 fullWidth
                 margin="dense"
               />
@@ -81,7 +54,7 @@ export default function ConnectionPage() {
           <LoadingButton
             variant="contained"
             size="large"
-            loading={state.isLoading}
+            loading={isLoading}
             onClick={connect}
           >
             Connect
