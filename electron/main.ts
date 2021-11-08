@@ -1,16 +1,16 @@
-import { app, BrowserWindow, ipcMain, MessageChannelMain } from 'electron'
+import { app, BrowserWindow, ipcMain, MessageChannelMain } from 'electron';
 
-app.commandLine.appendSwitch('enable-features', "SharedArrayBuffer")
+app.commandLine.appendSwitch('enable-features', 'SharedArrayBuffer');
 
-let mainWindow: BrowserWindow | null
-let threadWindow: BrowserWindow | null
+let mainWindow: BrowserWindow | null;
+let threadWindow: BrowserWindow | null;
 
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
-declare const THREAD_WINDOW_WEBPACK_ENTRY: string
-declare const THREAD_WINDOW_PRELOAD_WEBPACK_ENTRY: string
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+declare const THREAD_WINDOW_WEBPACK_ENTRY: string;
+declare const THREAD_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
-function createMainWindow () {
+function createMainWindow() {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     show: true,
@@ -23,18 +23,18 @@ function createMainWindow () {
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
-  })
-  
-  mainWindow.webContents.openDevTools()
+  });
 
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
+  mainWindow.webContents.openDevTools();
+
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow = null;
+  });
 }
 
-function createThreadWindow () {
+function createThreadWindow() {
   threadWindow = new BrowserWindow({
     show: false,
     width: 0,
@@ -44,11 +44,11 @@ function createThreadWindow () {
       contextIsolation: true,
       preload: THREAD_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
-  })
-  
+  });
+
   threadWindow.webContents.openDevTools({ mode: 'detach' });
 
-  threadWindow.loadURL(THREAD_WINDOW_WEBPACK_ENTRY)
+  threadWindow.loadURL(THREAD_WINDOW_WEBPACK_ENTRY);
 
   // threadWindow.on('close', (e: Event) => {
   //   e.preventDefault();
@@ -56,8 +56,8 @@ function createThreadWindow () {
   // })
 
   threadWindow.on('closed', () => {
-    threadWindow = null
-  })
+    threadWindow = null;
+  });
 }
 
 function appReady() {
@@ -65,31 +65,32 @@ function appReady() {
     if (!mainWindow || !threadWindow) return;
 
     if (event.senderFrame === mainWindow.webContents.mainFrame) {
-      const { port1, port2 } = new MessageChannelMain()
-      threadWindow.webContents.postMessage('new-client', null, [port1])
-      event.senderFrame.postMessage('provide-thread-channel', null, [port2])
+      const { port1, port2 } = new MessageChannelMain();
+      threadWindow.webContents.postMessage('new-client', null, [port1]);
+      event.senderFrame.postMessage('provide-thread-channel', null, [port2]);
 
       mainWindow.show();
     }
-  })
+  });
 }
 
-app.on('ready', () => {
-  createThreadWindow();
-  createMainWindow();
-})
+app
+  .on('ready', () => {
+    createThreadWindow();
+    createMainWindow();
+  })
   .whenReady()
   .then(appReady)
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e));
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createMainWindow()
+    createMainWindow();
   }
-})
+});

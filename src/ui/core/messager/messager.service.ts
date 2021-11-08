@@ -1,7 +1,7 @@
-import { ConnectResponse, Messager } from "./messager.types";
+import { ConnectResponse, Messager } from './messager.types';
 
 export interface MessagerService {
-  connect(connectionString: string): Promise<ConnectResponse>
+  connect(connectionString: string): Promise<ConnectResponse>;
 }
 
 export const createMessagerService = (messager: Messager): MessagerService => ({
@@ -11,5 +11,5 @@ export const createMessagerService = (messager: Messager): MessagerService => ({
     });
 
     return { databases, collections } as ConnectResponse;
-  }
-})
+  },
+});

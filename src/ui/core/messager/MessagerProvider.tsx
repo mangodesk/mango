@@ -1,38 +1,30 @@
-import * as React from 'react'
-import { setIsInitializing, useAppDispatch } from '../../store'
-import { MessagerService, createMessagerService } from './messager.service'
+import * as React from 'react';
+import { setIsInitializing, useAppDispatch } from '../../store';
+import { MessagerService, createMessagerService } from './messager.service';
 
-export const MessagerContext = React.createContext<undefined | MessagerService>(
-  undefined
-)
+export const MessagerContext = React.createContext<undefined | MessagerService>(undefined);
 
 type Props = {
-  children?: React.ReactNode
-}
+  children?: React.ReactNode;
+};
 
 export function MessagerProvider(props: Props) {
-  const [messagerService, setMessagerService] = React.useState<
-    MessagerService | undefined
-  >()
-  const dispatch = useAppDispatch()
+  const [messagerService, setMessagerService] = React.useState<MessagerService | undefined>();
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     const initialize = async () => {
-      dispatch(setIsInitializing(true))
+      dispatch(setIsInitializing(true));
 
-      const bridgeAPI = await window.bridge.initialize()
+      const bridgeAPI = await window.bridge.initialize();
 
-      setMessagerService(createMessagerService(bridgeAPI.messager))
+      setMessagerService(createMessagerService(bridgeAPI.messager));
 
-      dispatch(setIsInitializing(false))
-    }
+      dispatch(setIsInitializing(false));
+    };
 
-    initialize()
-  }, [])
+    initialize();
+  }, []);
 
-  return (
-    <MessagerContext.Provider value={messagerService}>
-      {props.children}
-    </MessagerContext.Provider>
-  )
+  return <MessagerContext.Provider value={messagerService}>{props.children}</MessagerContext.Provider>;
 }

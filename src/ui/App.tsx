@@ -1,32 +1,25 @@
-import * as React from 'react'
-import { HashRouter as Router, Switch, Route } from 'react-router-dom'
+import * as React from 'react';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
-import {
-  CircularProgress,
-  createTheme,
-  ThemeProvider,
-  useMediaQuery,
-} from '@mui/material'
-import defaultTheme from './themes/default'
-import Layout from './components/Layout'
-import ConnectionPage from './pages/ConnectionPage'
-import { Provider, useSelector } from 'react-redux'
-import store, { RootState } from './store'
-import { MessagerProvider } from './core/messager'
+import { CircularProgress, createTheme, ThemeProvider, useMediaQuery } from '@mui/material';
+import defaultTheme from './themes/default';
+import Layout from './components/Layout';
+import ConnectionPage from './pages/ConnectionPage';
+import { Provider, useSelector } from 'react-redux';
+import store, { RootState } from './store';
+import { MessagerProvider } from './core/messager';
 
-const QueryPage = React.lazy(() => import('./pages/QueryPage'))
+const QueryPage = React.lazy(() => import('./pages/QueryPage'));
 
 function AppLoading() {
-  const isInitializing = useSelector<RootState>(
-    state => state.app.isInitializing
-  )
+  const isInitializing = useSelector<RootState>((state) => state.app.isInitializing);
 
   if (isInitializing) {
     return (
       <Layout>
         <CircularProgress />
       </Layout>
-    )
+    );
   }
 
   return (
@@ -40,11 +33,11 @@ function AppLoading() {
         </Switch>
       </Layout>
     </React.Suspense>
-  )
+  );
 }
 
 export function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const theme = React.useMemo(
     () =>
@@ -54,8 +47,8 @@ export function App() {
         },
         ...defaultTheme,
       }),
-    [prefersDarkMode]
-  )
+    [prefersDarkMode],
+  );
 
   return (
     <React.StrictMode>
@@ -69,5 +62,5 @@ export function App() {
         </ThemeProvider>
       </Router>
     </React.StrictMode>
-  )
+  );
 }

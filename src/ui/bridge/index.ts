@@ -1,13 +1,13 @@
-import { ipcRenderer, contextBridge, IpcRendererEvent } from "electron";
+import { ipcRenderer, contextBridge, IpcRendererEvent } from 'electron';
 
 import Messager from '../../shared-bridge/Messager';
 import { waitForEvent } from '../../shared-bridge/events';
 
 const bridge = {
   initialize: async () => {
-    ipcRenderer.send('request-thread-channel')
+    ipcRenderer.send('request-thread-channel');
 
-    const { ports} = await waitForEvent<IpcRendererEvent>('provide-thread-channel', ipcRenderer);
+    const { ports } = await waitForEvent<IpcRendererEvent>('provide-thread-channel', ipcRenderer);
 
     const [port] = ports;
 
@@ -24,4 +24,4 @@ const bridge = {
 
 export default bridge;
 
-contextBridge.exposeInMainWorld("bridge", bridge);
+contextBridge.exposeInMainWorld('bridge', bridge);

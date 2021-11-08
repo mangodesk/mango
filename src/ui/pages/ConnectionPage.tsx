@@ -1,64 +1,64 @@
-import * as React from 'react'
-import { Controller, useForm } from "react-hook-form";
-import LoadingButton from '@mui/lab/LoadingButton'
-import { 
-  Box, 
-  TextField, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  styled, 
-  MenuItem, 
-  Container, 
-  Paper, 
-  Typography, 
-  Divider, 
-} from '@mui/material'
-import { useMessager } from '../core/messager'
-import { useAppDispatch, setDatabases, setCollections } from '../store'
+import * as React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import LoadingButton from '@mui/lab/LoadingButton';
+import {
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  styled,
+  MenuItem,
+  Container,
+  Paper,
+  Typography,
+  Divider,
+} from '@mui/material';
+import { useMessager } from '../core/messager';
+import { useAppDispatch, setDatabases, setCollections } from '../store';
 import { useHistory } from 'react-router';
 
-const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
+const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017';
 
 const FormContent = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   padding: 25,
-})
+});
 
 const FormRow = styled(Box)({
   display: 'flex',
   flexDirection: 'row',
-  padding: 5
-})
+  padding: 5,
+});
 
 export default function ConnectionPage() {
-  const history = useHistory()
-  const messager = useMessager()
+  const history = useHistory();
+  const messager = useMessager();
   const { handleSubmit, control } = useForm();
-  const storeDispatch = useAppDispatch()
+  const storeDispatch = useAppDispatch();
 
   const [isLoading, setIsLoading] = React.useState(false);
 
   const connect = async ({ connectionString }: { connectionString: string }) => {
-    if(!messager) return;
+    if (!messager) return;
 
     setIsLoading(true);
 
     try {
-      const { databases, collections } = await messager.connect(connectionString)
-      storeDispatch(setDatabases(databases))
-      storeDispatch(setCollections(collections))
+      const { databases, collections } = await messager.connect(connectionString);
+      storeDispatch(setDatabases(databases));
+      storeDispatch(setCollections(collections));
       setIsLoading(false);
-      history.push('/query')
+      history.push('/query');
 
-      console.log(databases)
+      console.log(databases);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
     setIsLoading(false);
-  }
+  };
 
   return (
     <Container>
@@ -73,7 +73,7 @@ export default function ConnectionPage() {
           <FormContent>
             <FormRow>
               <Controller
-                name={"name"}
+                name={'name'}
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <TextField
@@ -88,17 +88,12 @@ export default function ConnectionPage() {
               />
 
               <Controller
-                name={"type"}
+                name={'type'}
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <FormControl sx={{ marginLeft: 2 }} fullWidth>
                     <InputLabel id="type">Type</InputLabel>
-                    <Select
-                      labelId="type"
-                      value={value}
-                      label="Age"
-                      onChange={onChange}
-                    >
+                    <Select labelId="type" value={value} label="Age" onChange={onChange}>
                       <MenuItem value={'production'}>Production</MenuItem>
                       <MenuItem value={'staging'}>Staging</MenuItem>
                       <MenuItem value={'local'}>Local</MenuItem>
@@ -111,7 +106,7 @@ export default function ConnectionPage() {
 
             <FormRow>
               <Controller
-                name={"connectionString"}
+                name={'connectionString'}
                 control={control}
                 defaultValue={DEFAULT_CONNECTION_STRING}
                 render={({ field: { onChange, value } }) => (
@@ -125,13 +120,13 @@ export default function ConnectionPage() {
                   />
                 )}
               />
-              
-                <LoadingButton
-                  sx={{ marginLeft: '10px' }}
-                  variant="outlined"
-                  loading={isLoading}
-                  onClick={handleSubmit(connect)}
-                >
+
+              <LoadingButton
+                sx={{ marginLeft: '10px' }}
+                variant="outlined"
+                loading={isLoading}
+                onClick={handleSubmit(connect)}
+              >
                 Connect
               </LoadingButton>
             </FormRow>
@@ -139,5 +134,5 @@ export default function ConnectionPage() {
         </Box>
       </Paper>
     </Container>
-  )
+  );
 }
