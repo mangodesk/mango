@@ -1,20 +1,11 @@
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material'
-import { useSelector } from 'react-redux'
-import { Collection, Database, RootState } from '../store'
+import React from 'react';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { Collection, Database, RootState } from '../store';
 
 export default function QueryPage() {
-  const databases = useSelector<RootState, Database[]>(
-    state => state.db.databases
-  )
-  const collections = useSelector<RootState, Collection[]>(
-    state => state.db.collections
-  )
+  const databases = useSelector<RootState, Database[]>((state) => state.db.databases);
+  const collections = useSelector<RootState, Collection[]>((state) => state.db.collections);
 
   return (
     <Drawer
@@ -38,5 +29,5 @@ export default function QueryPage() {
         ))}
       </List>
     </Drawer>
-  )
+  );
 }

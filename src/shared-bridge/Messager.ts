@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { EventEmitter } from 'events';
-import Hyperid from "hyperid";
+import Hyperid from 'hyperid';
 
 type InternalMessage = {
   id: string;
@@ -46,7 +46,7 @@ export default class Messager extends EventEmitter {
     this.on(name, async (internalMessage: InternalMessage) => {
       let replyData;
       let errorData;
-      
+
       try {
         replyData = await handlerFn(internalMessage.payload);
       } catch (error) {
