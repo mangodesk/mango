@@ -1,25 +1,46 @@
-import React, { useContext, useState } from 'react'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
+import * as React from 'react'
+import { Controller, useForm } from "react-hook-form";
 import LoadingButton from '@mui/lab/LoadingButton'
-import { Container, Grid, Paper, Typography } from '@mui/material'
-import { MessagerContext } from '../App'
+import { 
+  Box, 
+  TextField, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  styled, 
+  MenuItem, 
+  Container, 
+  Paper, 
+  Typography, 
+  Divider, 
+} from '@mui/material'
+import { useMessager } from '../core/messager'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
+const FormContent = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  padding: 25,
+})
+
+const FormRow = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  padding: 5
+})
+
 export default function ConnectionPage() {
-  const messager = useContext(MessagerContext)
+  const messager = useMessager()
+  const { handleSubmit, control } = useForm();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [connectionString, updateConnectionString] = useState(DEFAULT_CONNECTION_STRING);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const connect = async () => {
+  const connect = async ({ connectionString }: { connectionString: string }) => {
     setIsLoading(true);
 
     try {
-      const { databases } = await messager?.invoke('connect', {
-        connectionString,
-      })
+      const databases = await messager?.connect(connectionString)
 
       console.log(databases)
     } catch (error) {
@@ -32,33 +53,79 @@ export default function ConnectionPage() {
   return (
     <Container>
       <Paper>
-        <Box px={3} py={2} component="form" noValidate autoComplete="off">
-          <Typography variant="h6" margin="dense">
+        <Box component="form" noValidate autoComplete="off">
+          <Typography px={3} py={2} variant="h6">
             Add a new database
           </Typography>
 
-          <Grid container>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                placeholder={DEFAULT_CONNECTION_STRING}
-                label="Connection string"
-                variant="outlined"
-                value={connectionString}
-                onChange={event => updateConnectionString(event.target.value)}
-                fullWidth
-                margin="dense"
-              />
-            </Grid>
-          </Grid>
+          <Divider />
 
-          <LoadingButton
-            variant="contained"
-            size="large"
-            loading={isLoading}
-            onClick={connect}
-          >
-            Connect
-          </LoadingButton>
+          <FormContent>
+            <FormRow>
+              <Controller
+                name={"name"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder="Nom de la base de données"
+                    label="Name"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+
+              <Controller
+                name={"type"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <FormControl sx={{ marginLeft: 2 }} fullWidth>
+                    <InputLabel id="type">Type</InputLabel>
+                    <Select
+                      labelId="type"
+                      value={value}
+                      label="Age"
+                      onChange={onChange}
+                    >
+                      <MenuItem value={'production'}>Production</MenuItem>
+                      <MenuItem value={'staging'}>Staging</MenuItem>
+                      <MenuItem value={'local'}>Local</MenuItem>
+                      <MenuItem value={'other'}>Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </FormRow>
+
+            <FormRow>
+              <Controller
+                name={"connectionString"}
+                control={control}
+                defaultValue={DEFAULT_CONNECTION_STRING}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder={DEFAULT_CONNECTION_STRING}
+                    label="Connection string"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+              
+                <LoadingButton
+                  sx={{ marginLeft: '10px' }}
+                  variant="outlined"
+                  loading={isLoading}
+                  onClick={handleSubmit(connect)}
+                >
+                Connect
+              </LoadingButton>
+            </FormRow>
+          </FormContent>
         </Box>
       </Paper>
     </Container>
