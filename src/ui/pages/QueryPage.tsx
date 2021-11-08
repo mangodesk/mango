@@ -6,11 +6,15 @@ import {
   ListItemText,
 } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { Collection, Database, RootState } from '../store'
 
 export default function QueryPage() {
-  const databases = useSelector<RootState>(state => state.db.databases)
-  const collections = useSelector<RootState>(state => state.db.collections)
+  const databases = useSelector<RootState, Database[]>(
+    state => state.db.databases
+  )
+  const collections = useSelector<RootState, Collection[]>(
+    state => state.db.collections
+  )
 
   return (
     <Drawer

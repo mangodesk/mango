@@ -9,12 +9,11 @@ const appState: AppState = {
   isInitializing: false,
 };
 
-
-type Database = {
+export type Database = {
   name: string;
 };
 
-type Collection = {
+export type Collection = {
   name: string;
   database: string;
 };
