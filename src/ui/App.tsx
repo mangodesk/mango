@@ -1,4 +1,10 @@
-import React, { createContext, lazy, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  lazy,
+  Suspense,
+  useEffect,
+  useState,
+} from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import merge from 'lodash/merge'
 
@@ -54,16 +60,18 @@ function AppLoading() {
   }
 
   return (
-    <MessagerContext.Provider value={messager}>
-      <Layout>
-        <Switch>
-          <Route path="/" component={ConnectionPage} />
-        </Switch>
-        <Switch>
-          <Route path="/query" component={QueryPage} />
-        </Switch>
-      </Layout>
-    </MessagerContext.Provider>
+    <Suspense fallback="Loading...">
+      <MessagerContext.Provider value={messager}>
+        <Layout>
+          <Switch>
+            <Route exact path="/" component={ConnectionPage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/query" component={QueryPage} />
+          </Switch>
+        </Layout>
+      </MessagerContext.Provider>
+    </Suspense>
   )
 }
 

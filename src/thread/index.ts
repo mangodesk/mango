@@ -7,7 +7,7 @@
     console.log('on connect', { connectionString })
     const mongodb = await connect({ connectionString });
 
-    const databases = await mongodb.listDatabases()
+    const { databases } = await mongodb.listDatabases()
 
     return {
       databases,

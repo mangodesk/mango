@@ -2,8 +2,11 @@ import React, { useContext, useReducer } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { MessagerContext } from '../App'
+import { useHistory } from 'react-router-dom'
 import { Container, Grid, Paper, Typography } from '@mui/material'
+
+import { MessagerContext } from '../App'
+import { useAppDispatch, setDatabases, setCollections } from '../store'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
@@ -29,8 +32,10 @@ function reducer(state: State, action: { type: string; payload: any }): State {
 }
 
 export default function ConnectionPage() {
+  const history = useHistory()
   const messager = useContext(MessagerContext)
   const [state, dispatch] = useReducer(reducer, initialState)
+  const storeDispatch = useAppDispatch()
 
   const updateConnectionString = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -44,16 +49,19 @@ export default function ConnectionPage() {
     const connectionString = state.connectionString || DEFAULT_CONNECTION_STRING
 
     try {
-      const { databases } = await messager?.invoke('connect', {
+      const { databases, collections } = await messager?.invoke('connect', {
         connectionString,
       })
 
-      console.log(databases)
+      storeDispatch(setDatabases(databases))
+      storeDispatch(setCollections(collections))
+
+      dispatch({ type: 'setIsLoading', payload: false })
+      history.push('/query')
     } catch (error) {
       console.error(error)
+      dispatch({ type: 'setIsLoading', payload: false })
     }
-
-    dispatch({ type: 'setIsLoading', payload: false })
   }
 
   return (

@@ -1,5 +1,6 @@
 import { ipcRenderer, contextBridge, IpcRendererEvent } from "electron";
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
+import _ from 'lodash';
 
 import { VM } from 'vm2';
 import Messager from '../../shared-bridge/Messager';
@@ -29,7 +30,16 @@ const bridge = {
           listDatabases: async () => {
             const { databases } = await adminDb.listDatabases();
 
-            return databases;
+            const databasesWithCollections = await Promise.all(_.map(databases, async ({ name }) => {
+              const dbCollections = await client.db(name).listCollections().toArray();
+
+              return { dbName: name, collections: dbCollections };
+            }))
+
+            return {
+              databases: _.map(databases, ({ name }) => ({ name })),
+              collections: _.flatMap(databasesWithCollections, ({ collections }) => collections),
+            };
           },  
         };
       },

@@ -9,6 +9,25 @@ const appState: AppState = {
   isInitializing: false,
 };
 
+type Database = {
+  name: string;
+};
+
+type Collection = {
+  name: string;
+  database: string;
+};
+
+type DbState = {
+  databases: Database[];
+  collections: Collection[];
+};
+
+const dbState: DbState = {
+  databases: [],
+  collections: [],
+};
+
 export const setIsInitializing = createAction<boolean, 'SET_IS_INITIALIZING'>('SET_IS_INITIALIZING');
 
 const appReducer = createReducer(appState, (builder) =>
@@ -18,9 +37,23 @@ const appReducer = createReducer(appState, (builder) =>
     })
   )
 
+export const setDatabases = createAction<Database[], 'SET_DATABASES'>('SET_DATABASES');
+export const setCollections = createAction<Collection[], 'SET_COLLECTIONS'>('SET_COLLECTIONS');
+
+const dbReducer = createReducer(dbState, (builder) =>
+  builder
+    .addCase(setDatabases, (state, { payload }) => {
+      state.databases = payload;
+    })
+    .addCase(setCollections, (state, { payload }) => {
+      state.collections = payload;
+    })
+  )
+
 const store = configureStore({
   reducer: {
     app: appReducer,
+    db: dbReducer,
   },
 })
 
