@@ -1,16 +1,33 @@
 import * as React from 'react'
 import { Controller, useForm } from "react-hook-form";
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { styled, Container, Paper, Typography, Divider } from '@mui/material'
+import { 
+  Box, 
+  TextField, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  styled, 
+  MenuItem, 
+  Container, 
+  Paper, 
+  Typography, 
+  Divider, 
+} from '@mui/material'
 import { useMessager } from '../core/messager'
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
 const FormContent = styled(Box)({
   display: 'flex',
+  flexDirection: 'column',
   padding: 25,
+})
+
+const FormRow = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  padding: 5
 })
 
 export default function ConnectionPage() {
@@ -44,30 +61,70 @@ export default function ConnectionPage() {
           <Divider />
 
           <FormContent>
-            <Controller
-              name={"connectionString"}
-              control={control}
-              defaultValue={DEFAULT_CONNECTION_STRING}
-              render={({ field: { onChange, value } }) => (
-                <TextField
-                  placeholder={DEFAULT_CONNECTION_STRING}
-                  label="Connection string"
+            <FormRow>
+              <Controller
+                name={"name"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder="Nom de la base de données"
+                    label="Name"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+
+              <Controller
+                name={"type"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <FormControl sx={{ marginLeft: 2 }} fullWidth>
+                    <InputLabel id="type">Type</InputLabel>
+                    <Select
+                      labelId="type"
+                      value={value}
+                      label="Age"
+                      onChange={onChange}
+                    >
+                      <MenuItem value={'production'}>Production</MenuItem>
+                      <MenuItem value={'staging'}>Staging</MenuItem>
+                      <MenuItem value={'local'}>Local</MenuItem>
+                      <MenuItem value={'other'}>Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </FormRow>
+
+            <FormRow>
+              <Controller
+                name={"connectionString"}
+                control={control}
+                defaultValue={DEFAULT_CONNECTION_STRING}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder={DEFAULT_CONNECTION_STRING}
+                    label="Connection string"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+              
+                <LoadingButton
+                  sx={{ marginLeft: '10px' }}
                   variant="outlined"
-                  value={value}
-                  onChange={onChange}
-                  fullWidth
-                />
-              )}
-            />
-            
-              <LoadingButton
-                sx={{ marginLeft: '10px' }}
-                variant="outlined"
-                loading={isLoading}
-                onClick={handleSubmit(connect)}
-              >
-              Connect
-            </LoadingButton>
+                  loading={isLoading}
+                  onClick={handleSubmit(connect)}
+                >
+                Connect
+              </LoadingButton>
+            </FormRow>
           </FormContent>
         </Box>
       </Paper>
