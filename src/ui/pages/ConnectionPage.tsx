@@ -50,9 +50,8 @@ export default function ConnectionPage() {
       storeDispatch(setDatabases(databases));
       storeDispatch(setCollections(collections));
       setIsLoading(false);
-      history.push('/query');
 
-      console.log(databases);
+      history.push('/query');
     } catch (error) {
       console.error(error);
     }
