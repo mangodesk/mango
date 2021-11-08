@@ -1,11 +1,21 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
-import { Collection, Database, RootState } from '../store';
+import _ from 'lodash';
+import { selectDatabasesWithCollections } from '../store';
 
 export default function QueryPage() {
-  const databases = useSelector<RootState, Database[]>((state) => state.db.databases);
-  const collections = useSelector<RootState, Collection[]>((state) => state.db.collections);
+  const databasesWithCollections = useSelector(selectDatabasesWithCollections);
 
   return (
     <Drawer
@@ -20,14 +30,30 @@ export default function QueryPage() {
       variant="permanent"
       anchor="left"
     >
-      <List dense>
-        {databases.map(({ name }) => (
+      {databasesWithCollections.map(({ name: databaseName, collections }) => (
+        <Accordion key={databaseName}>
+          <AccordionSummary>
+            <Typography>{databaseName}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List dense>
+              {collections.map(({ name: collectionName }) => (
+                <ListItem button key={`${databaseName}-${collectionName}`}>
+                  <ListItemText primary={collectionName} />
+                </ListItem>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      {/* <List dense>
+        {databasesWithCollections.map(({ name }) => (
           <ListItem button key={name}>
             <ListItemIcon></ListItemIcon>
             <ListItemText primary={name} />
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </Drawer>
   );
 }

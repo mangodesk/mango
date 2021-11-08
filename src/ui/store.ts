@@ -1,5 +1,7 @@
 import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import _ from 'lodash';
 import { useDispatch } from 'react-redux';
+import { createSelector } from 'reselect';
 
 type AppState = {
   isInitializing: boolean;
@@ -27,6 +29,15 @@ const dbState: DbState = {
   databases: [],
   collections: [],
 };
+
+export const selectDatabasesWithCollections = createSelector(
+  [(state: RootState) => state.db.databases, (state: RootState) => state.db.collections],
+  (databases, collections) =>
+    _.map(databases, (database) => ({
+      name: database.name,
+      collections: _.filter(collections, { database: database.name }),
+    })),
+);
 
 export const setIsInitializing = createAction<boolean, 'SET_IS_INITIALIZING'>('SET_IS_INITIALIZING');
 
