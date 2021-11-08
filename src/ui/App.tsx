@@ -33,10 +33,10 @@ function AppLoading() {
     <React.Suspense fallback="Loading...">
       <Layout>
         <Switch>
-          <Route path="/" component={ConnectionPage} />
+          <Route exact path="/" component={ConnectionPage} />
         </Switch>
         <Switch>
-          <Route path="/query" component={QueryPage} />
+          <Route exact path="/query" component={QueryPage} />
         </Switch>
       </Layout>
     </React.Suspense>
@@ -50,7 +50,7 @@ export function App() {
     () =>
       createTheme({
         palette: {
-           mode: prefersDarkMode ? 'dark' : 'light',
+          mode: prefersDarkMode ? 'dark' : 'light',
         },
         ...defaultTheme,
       }),

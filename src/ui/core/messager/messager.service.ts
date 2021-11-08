@@ -6,10 +6,10 @@ export interface MessagerService {
 
 export const createMessagerService = (messager: Messager): MessagerService => ({
   async connect(connectionString: string) {
-    const result = await messager?.invoke('connect', {
+    const { databases, collections } = await messager?.invoke('connect', {
       connectionString,
     });
 
-    return result as ConnectResponse;
+    return { databases, collections } as ConnectResponse;
   }
 })

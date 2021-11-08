@@ -30,10 +30,10 @@ const bridge = {
           listDatabases: async () => {
             const { databases } = await adminDb.listDatabases();
 
-            const databasesWithCollections = await Promise.all(_.map(databases, async ({ name }) => {
-              const dbCollections = await client.db(name).listCollections().toArray();
+            const databasesWithCollections = await Promise.all(_.map(databases, async ({ name: dbName }) => {
+              const dbCollections = await client.db(dbName).listCollections().toArray();
 
-              return { dbName: name, collections: dbCollections };
+              return { dbName, collections: _.map(dbCollections, ({ name }) => ({ name, database: dbName })) };
             }))
 
             return {
