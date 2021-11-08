@@ -1,99 +1,141 @@
-import React, { useContext, useReducer } from 'react'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
+import * as React from 'react'
+import { Controller, useForm } from "react-hook-form";
 import LoadingButton from '@mui/lab/LoadingButton'
-import { useHistory } from 'react-router-dom'
-import { Container, Grid, Paper, Typography } from '@mui/material'
-
-import { MessagerContext } from '../App'
+import { 
+  Box, 
+  TextField, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  styled, 
+  MenuItem, 
+  Container, 
+  Paper, 
+  Typography, 
+  Divider, 
+} from '@mui/material'
+import { useMessager } from '../core/messager'
 import { useAppDispatch, setDatabases, setCollections } from '../store'
+import { useHistory } from 'react-router';
 
 const DEFAULT_CONNECTION_STRING = 'mongodb://localhost:27017'
 
-type State = {
-  isLoading: boolean
-  connectionString?: string
-}
+const FormContent = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  padding: 25,
+})
 
-const initialState: State = {
-  isLoading: false,
-  connectionString: '',
-}
-
-function reducer(state: State, action: { type: string; payload: any }): State {
-  switch (action.type) {
-    case 'setIsLoading':
-      return { ...state, isLoading: action.payload }
-    case 'updateConnectionString':
-      return { ...state, connectionString: action.payload }
-    default:
-      throw new Error('Unknown action')
-  }
-}
+const FormRow = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  padding: 5
+})
 
 export default function ConnectionPage() {
   const history = useHistory()
-  const messager = useContext(MessagerContext)
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const messager = useMessager()
+  const { handleSubmit, control } = useForm();
   const storeDispatch = useAppDispatch()
 
-  const updateConnectionString = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    dispatch({ type: 'updateConnectionString', payload: event.target.value })
-  }
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const connect = async () => {
-    dispatch({ type: 'setIsLoading', payload: true })
+  const connect = async ({ connectionString }: { connectionString: string }) => {
+    if(!messager) return;
 
-    const connectionString = state.connectionString || DEFAULT_CONNECTION_STRING
+    setIsLoading(true);
 
     try {
-      const { databases, collections } = await messager?.invoke('connect', {
-        connectionString,
-      })
-
+      const { databases, collections } = await messager.connect(connectionString)
       storeDispatch(setDatabases(databases))
       storeDispatch(setCollections(collections))
-
-      dispatch({ type: 'setIsLoading', payload: false })
+      setIsLoading(false);
       history.push('/query')
+
+      console.log(databases)
     } catch (error) {
       console.error(error)
-      dispatch({ type: 'setIsLoading', payload: false })
     }
+
+    setIsLoading(false);
   }
 
   return (
     <Container>
       <Paper>
-        <Box px={3} py={2} component="form" noValidate autoComplete="off">
-          <Typography variant="h6" margin="dense">
+        <Box component="form" noValidate autoComplete="off">
+          <Typography px={3} py={2} variant="h6">
             Add a new database
           </Typography>
 
-          <Grid container>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                placeholder={DEFAULT_CONNECTION_STRING}
-                label="Connection string"
-                variant="outlined"
-                value={state.connectionString}
-                onChange={updateConnectionString}
-                fullWidth
-                margin="dense"
-              />
-            </Grid>
-          </Grid>
+          <Divider />
 
-          <LoadingButton
-            variant="contained"
-            size="large"
-            loading={state.isLoading}
-            onClick={connect}
-          >
-            Connect
-          </LoadingButton>
+          <FormContent>
+            <FormRow>
+              <Controller
+                name={"name"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder="Nom de la base de données"
+                    label="Name"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+
+              <Controller
+                name={"type"}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <FormControl sx={{ marginLeft: 2 }} fullWidth>
+                    <InputLabel id="type">Type</InputLabel>
+                    <Select
+                      labelId="type"
+                      value={value}
+                      label="Age"
+                      onChange={onChange}
+                    >
+                      <MenuItem value={'production'}>Production</MenuItem>
+                      <MenuItem value={'staging'}>Staging</MenuItem>
+                      <MenuItem value={'local'}>Local</MenuItem>
+                      <MenuItem value={'other'}>Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </FormRow>
+
+            <FormRow>
+              <Controller
+                name={"connectionString"}
+                control={control}
+                defaultValue={DEFAULT_CONNECTION_STRING}
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    placeholder={DEFAULT_CONNECTION_STRING}
+                    label="Connection string"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                  />
+                )}
+              />
+              
+                <LoadingButton
+                  sx={{ marginLeft: '10px' }}
+                  variant="outlined"
+                  loading={isLoading}
+                  onClick={handleSubmit(connect)}
+                >
+                Connect
+              </LoadingButton>
+            </FormRow>
+          </FormContent>
         </Box>
       </Paper>
     </Container>

@@ -3,7 +3,9 @@ export type Messager = {
  invoke: (name: string, payload?: any) => Promise<any>
 }
   
-  
 export type ConnectResponse = {
-  name: string;
-}[]
+  databases: {
+    name: string;
+   }[],
+  collections: any
+}

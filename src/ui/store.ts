@@ -9,6 +9,7 @@ const appState: AppState = {
   isInitializing: false,
 };
 
+
 type Database = {
   name: string;
 };

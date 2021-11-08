@@ -1,12 +1,5 @@
-import React, {
-  createContext,
-  lazy,
-  Suspense,
-  useEffect,
-  useState,
-} from 'react'
+import * as React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
-import merge from 'lodash/merge'
 
 import {
   CircularProgress,
@@ -18,35 +11,12 @@ import defaultTheme from './themes/default'
 import Layout from './components/Layout'
 import ConnectionPage from './pages/ConnectionPage'
 import { Provider, useSelector } from 'react-redux'
-import store, { RootState, useAppDispatch, setIsInitializing } from './store'
+import store, { RootState } from './store'
+import { MessagerProvider } from './core/messager'
 
-const QueryPage = lazy(() => import('./pages/QueryPage'))
-
-type Messager = {
-  handle: (name: string, handlerFn: (message: any) => Promise<any>) => void
-  invoke: (name: string, payload?: any) => Promise<any>
-}
-
-export const MessagerContext = createContext<undefined | Messager>(undefined)
+const QueryPage = React.lazy(() => import('./pages/QueryPage'))
 
 function AppLoading() {
-  const [messager, setMessager] = useState<undefined | Messager>()
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const initialize = async () => {
-      dispatch(setIsInitializing(true))
-
-      const bridgeAPI = await window.bridge.initialize()
-
-      setMessager(bridgeAPI.messager)
-
-      dispatch(setIsInitializing(false))
-    }
-
-    initialize()
-  }, [])
-
   const isInitializing = useSelector<RootState>(
     state => state.app.isInitializing
   )
@@ -60,18 +30,16 @@ function AppLoading() {
   }
 
   return (
-    <Suspense fallback="Loading...">
-      <MessagerContext.Provider value={messager}>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={ConnectionPage} />
-          </Switch>
-          <Switch>
-            <Route exact path="/query" component={QueryPage} />
-          </Switch>
-        </Layout>
-      </MessagerContext.Provider>
-    </Suspense>
+    <React.Suspense fallback="Loading...">
+      <Layout>
+        <Switch>
+          <Route path="/" component={ConnectionPage} />
+        </Switch>
+        <Switch>
+          <Route path="/query" component={QueryPage} />
+        </Switch>
+      </Layout>
+    </React.Suspense>
   )
 }
 
@@ -80,13 +48,12 @@ export function App() {
 
   const theme = React.useMemo(
     () =>
-      createTheme(
-        merge({}, defaultTheme, {
-          palette: {
-            mode: prefersDarkMode ? 'dark' : 'light',
-          },
-        })
-      ),
+      createTheme({
+        palette: {
+           mode: prefersDarkMode ? 'dark' : 'light',
+        },
+        ...defaultTheme,
+      }),
     [prefersDarkMode]
   )
 
@@ -95,7 +62,9 @@ export function App() {
       <Router>
         <ThemeProvider theme={theme}>
           <Provider store={store}>
-            <AppLoading />
+            <MessagerProvider>
+              <AppLoading />
+            </MessagerProvider>
           </Provider>
         </ThemeProvider>
       </Router>

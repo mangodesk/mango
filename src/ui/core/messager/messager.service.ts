@@ -10,6 +10,6 @@ export const createMessagerService = (messager: Messager): MessagerService => ({
       connectionString,
     });
 
-    return result.databases as ConnectResponse;
+    return result as ConnectResponse;
   }
 })
